@@ -1,9 +1,8 @@
 package net.surguy.filerenamer
 
 import java.io._
-import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
-import java.nio.file.{Paths, Path}
+import java.nio.file.Paths
 import scala.collection.JavaConversions._
 
 /**
@@ -20,11 +19,6 @@ class HashRecorder() {
     out.close()
   }
 
-  def processFile(file: File, baseDir: File): HashedFile = HashedFile(relativePath(baseDir, file), hash(file))
-  def hash(f: File) = DigestUtils.md5Hex(new FileInputStream(f))
-  def relativePath(baseDir: File, file: File) = Paths.get(baseDir.getAbsolutePath).relativize(Paths.get(file.getAbsolutePath))
-
-  case class HashedFile(path: Path, hash: String) {
-    def toProperty = hash + "="+path
-  }
+  private[filerenamer] def processFile(file: File, baseDir: File): HashedFile = HashedFile(relativePath(baseDir, file), HashedFile.hash(file))
+  private[filerenamer] def relativePath(baseDir: File, file: File) = Paths.get(baseDir.getAbsolutePath).relativize(Paths.get(file.getAbsolutePath))
 }

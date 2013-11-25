@@ -2,7 +2,7 @@ package net.surguy.filerenamer
 
 import org.specs2.mutable.SpecificationWithJUnit
 import java.io.File
-import java.nio.file.{Paths, Path}
+import java.nio.file.Paths
 import com.google.common.io.Files
 import com.google.common.base.Charsets
 import scala.collection.JavaConversions._
@@ -10,12 +10,6 @@ import scala.collection.JavaConversions._
 class HashRecorderTest extends SpecificationWithJUnit {
 
   val recorder = new HashRecorder()
-
-  "Hashing a file" should {
-    "return a hash that matches an expected value" in {
-      recorder.hash(new File("src/test/resources/test.txt")) mustEqual "2e5e1b29fcc9cff2b6ec4e7e0fb02ea8"
-    }
-  }
 
   "Working out a relative path" should {
     "give reasonable results when the second path is a subdirectory of the first" in {
