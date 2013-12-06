@@ -22,10 +22,14 @@ class HashRetriever[T <: Reader](private val lookupStream: InputSupplier[T], bas
   private[filerenamer] def createLookup(supplier: InputSupplier[T]) = {
     val lines = CharStreams.readLines(lookupStream)
     val lookupMap = ArrayListMultimap.create[String, Path]()
+    var count = 0
     for (line <- lines) {
       val hashedFile = HashedFile.fromProperty(line)
       lookupMap.put(hashedFile.hash, hashedFile.path)
+      count = count + 1
+      if (count % 5000 == 0) print(".")
     }
+    println("\nLookup loaded")
     lookupMap
   }
 
@@ -40,14 +44,16 @@ class HashRetriever[T <: Reader](private val lookupStream: InputSupplier[T], bas
     copyToPaths(file, outputPaths)
   }
 
-  private[filerenamer] def copyToPaths(sourceFile: File, outputPaths: util.List[Path]) = {
-    for (path <- outputPaths) yield {
+  private[filerenamer] def copyToPaths(sourceFile: File, outputPaths: util.List[Path]) {
+    var count = 0
+    for (path <- outputPaths) {
       val newFile = baseOutputDir.resolve(path).toFile
       if (! newFile.exists()) {
         newFile.getParentFile.mkdirs()
         Files.copy(sourceFile, newFile)
       }
-      newFile
+      count = count + 1
+      if (count % 5000 == 0) print(".")
     }
   }
 
